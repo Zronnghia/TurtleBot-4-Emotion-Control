@@ -1,4 +1,5 @@
 # Thông tin cho báo cáo PDF. Điền link rồi chạy:
+#   python3 docs/report/build_report_bai7.py      (Bài 7 – phân vùng bản đồ + giọng nói, 2 trang)
 #   python3 docs/report/build_report_bai6.py      (Bài 6 – cử chỉ tay)
 #   python3 docs/report/build_report.py           (Bài 5 – Nav2 + YOLO)
 ho_ten: "Lê Trọng Nghĩa"
@@ -12,3 +13,9 @@ ket_qua: []
 
 # (tuỳ chọn, Bài 6) Nhận xét thêm của bạn (một đoạn văn)
 nhan_xet: ""
+
+# (Bài 7) File voice_run.json của lần chạy demo CỦA BẠN (voice_navigator.py in đường dẫn khi thoát) – bảng kết quả
+# trong báo cáo dựng tự động từ file này. Để trống = dùng lần chạy kiểm thử trong môi trường ảo (sẽ có CẢNH BÁO).
+voice_run: ""
+# (tuỳ chọn, Bài 7) Nhận xét thêm (1–3 câu, ví dụ độ chính xác nhận dạng giọng nói đo trên micro của bạn)
+nhan_xet_bai7: ""

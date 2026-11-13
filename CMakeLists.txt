@@ -3,7 +3,8 @@ project(tb4_lab04)
 
 find_package(ament_cmake REQUIRED)
 
-# Launch, cấu hình (goal, vật thể, YOLO, Nav2, cử chỉ...), RViz, bản đồ, world Gazebo và model MediaPipe
+# Launch, cấu hình (goal, vật thể, YOLO, Nav2, cử chỉ, biểu cảm...), RViz, bản đồ, world Gazebo, model MediaPipe
+# và Haar cascade phát hiện mặt
 # -> share/tb4_lab04/
 # (thư mục maps/ luôn có README.md nên không bao giờ rỗng -> install không lỗi
 #  ngay cả khi chưa làm Phần 2)
@@ -43,12 +44,27 @@ install(
     scripts/gesture_sequence.py
     scripts/plot_gesture_run.py
     scripts/install_gesture_deps.sh
+    # Bài 7 – phân vùng bản đồ + điều hướng bằng giọng nói
+    scripts/zone_segmentation.py
+    scripts/speech_recognizer_node.py
+    scripts/voice_navigator.py
+    scripts/voice_keyboard.py
+    scripts/asr_benchmark.py
+    scripts/drop_box.sh
+    scripts/install_voice_deps.sh
+    # Bài 8 – biểu cảm khuôn mặt
+    scripts/emotion_recognition_node.py
+    scripts/emotion_behavior_node.py
+    scripts/emotion_sequence.py
+    scripts/plot_emotion_run.py
+    scripts/install_emotion_deps.sh
   DESTINATION lib/${PROJECT_NAME}
 )
 
 # Module Python dùng chung, được các script trên `import lab_common` (cùng thư mục, không chạy trực tiếp)
 install(
-  FILES scripts/lab_common.py scripts/gesture_logic.py
+  FILES scripts/lab_common.py scripts/gesture_logic.py scripts/voice_command.py
+        scripts/emotion_logic.py scripts/emotion_backends.py
   DESTINATION lib/${PROJECT_NAME}
 )
 

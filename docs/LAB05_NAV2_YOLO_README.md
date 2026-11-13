@@ -1,6 +1,6 @@
 # (Bài 5) TurtleBot 4 – Localization, Navigation tự động (Nav2) và nhận diện vật thể bằng YOLO
 
-> Tài liệu của **bài trước** (vẫn chạy được trong repo này). Bài 6 – điều khiển bằng cử chỉ tay: [`../README.md`](../README.md).
+> Tài liệu của **bài trước** (vẫn chạy được trong repo này). Bài 6 – điều khiển bằng cử chỉ tay: [`LAB06_GESTURE_README.md`](LAB06_GESTURE_README.md); bài hiện tại (Bài 7 – giọng nói): [`../README.md`](../README.md).
 
 ROS 2 Humble · Ignition Gazebo Fortress · TurtleBot 4 Simulator · Nav2 · nav2_simple_commander · ultralytics YOLO
 

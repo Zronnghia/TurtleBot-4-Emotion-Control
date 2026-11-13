@@ -58,6 +58,24 @@ def to_ascii(text):
     return text.encode('ascii', 'replace').decode('ascii')
 
 
+def log_at(logger, level, msg):
+    """Ghi log rclpy với mức chọn lúc chạy. KHÔNG dùng `getattr(logger, level)(msg)` hay
+    `(logger.info if ok else logger.warn)(msg)`: rclpy nhớ mức log theo TỪNG DÒNG gọi, cùng một dòng mà đổi
+    mức -> ValueError "Logger severity cannot be changed between calls" (node / luồng camera chết).
+    Ở đây mỗi mức có dòng gọi riêng."""
+    level = str(level).lower()
+    if level in ('fatal',):
+        logger.fatal(msg)
+    elif level in ('error', 'err'):
+        logger.error(msg)
+    elif level in ('warn', 'warning'):
+        logger.warning(msg)
+    elif level == 'debug':
+        logger.debug(msg)
+    else:
+        logger.info(msg)
+
+
 def as_bool(value):
     """Giá trị tham số -> bool ('false', '0', 'no', 'off', '' -> False). bool('false') của Python là True!"""
     if isinstance(value, str):

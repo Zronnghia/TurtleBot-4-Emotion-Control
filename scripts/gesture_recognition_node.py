@@ -514,7 +514,7 @@ def main(argv=None):
         return 1
 
     def slog(level, msg):
-        getattr(log, level)(msg)
+        gl.log_at(log, level, msg)
 
     try:
         model_path = resolve_model(prm['model_path'], prm['model_url'], MODEL_SHA256,

@@ -1,0 +1,82 @@
+# Bài 8 – tham số của 2 node biểu cảm (emotion.launch.py nạp file này).
+# Sửa xong chạy lại launch là có hiệu lực (colcon build --symlink-install).
+
+emotion_recognition_node:
+  ros__parameters:
+    # ---- nguồn ảnh
+    camera_source: "0"          # "0" = webcam laptop, "1" = webcam USB, /dev/video2, file video, thư mục ảnh
+    frame_width: 640
+    frame_height: 480
+    camera_fps: 30
+    camera_fourcc: ""           # "MJPG" nếu webcam chỉ đạt 10-15 FPS
+    mirror: true                # lật gương (như soi gương)
+    loop: false                 # nguồn video/thư mục ảnh: phát lặp
+    image_hold: 3.0             # nguồn thư mục ảnh: số giây mỗi ảnh
+    max_fps: 30.0               # máy yếu: 15
+    # ---- mô hình
+    backend: "deepface"         # deepface (ONNX, nhẹ, khuyên dùng) | fer (cần TensorFlow) | auto (deepface -> fer)
+    deepface_engine: "onnx"     # onnx | tensorflow | pytorch (engine của DeepFace >= 0.0.100)
+    fer_tflite: true            # FER: dùng mô hình TFLite lượng tử hoá (nhanh hơn)
+    # ---- phát hiện mặt (Haar cascade, models/haarcascade_frontalface_default.xml)
+    cascade_path: ""            # trống = file của repo
+    detect_width: 320           # phát hiện trên ảnh thu nhỏ (nhanh); mặt ở xa camera: 480
+    min_face: 60                # px (ảnh gốc) – mặt nhỏ hơn bị bỏ qua (người đứng sau lưng...)
+    min_neighbors: 5            # cao hơn = ít báo nhầm hơn nhưng dễ trượt mặt
+    face_hold_time: 0.3         # s giữ khung mặt cũ khi Haar trượt vài khung
+    face_alpha: 0.5             # làm mượt vị trí khung mặt (1 = không làm mượt)
+    # ---- nhãn + chống nhiễu
+    prob_alpha: 0.5             # EMA xác suất giữa các khung (1 = không làm mượt)
+    min_confidence: 0.40        # xác suất lớp cao nhất tối thiểu, thấp hơn -> unknown (không bỏ phiếu)
+    min_margin: 0.10            # lớp cao nhất phải hơn lớp thứ 2 ít nhất chừng này
+    hold_time: 0.6              # s phải giữ biểu cảm mới được coi là ổn định
+    neutral_hold_time: 0.4      # neutral = DỪNG -> phản ứng nhanh hơn
+    no_face_hold_time: 0.5
+    vote_ratio: 0.6             # >= 60 % khung trong cửa sổ cùng nhãn
+    min_frames: 3
+    # ---- hiển thị / topic
+    show_window: true
+    window_scale: 1.0
+    window_position: ""         # "x,y" – đặt cửa sổ cạnh Gazebo khi quay video
+    publish_image: false        # true: /emotion/image (rqt_image_view)
+    emotion_topic: "/detected_emotion"
+    state_topic: "/emotion_behavior/state"
+
+emotion_behavior_node:
+  ros__parameters:
+    emotion_topic: "/detected_emotion"
+    cmd_vel_topic: "/cmd_vel"
+    odom_topic: "/odom"
+    scan_topic: "/scan"
+    state_topic: "/emotion_behavior/state"
+    control_rate: 20.0
+    # ---- cách kích hoạt
+    mode: "once"                # once: mỗi lần biểu cảm ĐỔI -> 1 quỹ đạo; repeat: lặp khi còn giữ biểu cảm
+    repeat_delay: 1.0           # s nghỉ giữa 2 lần lặp (mode repeat)
+    min_interval: 0.5           # s tối thiểu giữa 2 lần kích hoạt
+    stop_on_no_face: true       # không thấy mặt -> dừng
+    # ---- an toàn
+    signal_timeout: 1.0         # s không có /detected_emotion -> DỪNG
+    use_scan_safety: true
+    obstacle_stop_distance: 0.40  # m (từ tâm LiDAR) theo hướng đang chạy
+    obstacle_half_angle: 0.6      # rad
+    stall_timeout: 4.0          # s (giờ mô phỏng) lệnh chạy mà odom không đổi -> dừng
+    odom_timeout: 1.0
+    max_lin_acc: 0.5            # m/s^2
+    max_ang_acc: 2.0            # rad/s^2
+    # ---- chuẩn bị (chỉ khi robot đang ở dock)
+    auto_undock: true
+    dock_wait: 8.0
+    undock_timeout: 90.0
+    setup_forward: 1.0          # m chạy thẳng ra giữa sân sau undock
+    setup_speed: 0.2
+    # ---- quỹ đạo
+    arc_speed: 0.15             # m/s     happy / sad: cung tròn
+    arc_radius: 0.30            # m       (ω = v/r = 0,5 rad/s)
+    arc_angle: 90.0             # độ
+    back_distance: 0.20         # m       angry: lùi nhẹ
+    back_speed: 0.10
+    forward_distance: 0.20      # m       fear: tiến nhẹ
+    forward_speed: 0.10
+    spin_speed: 1.0             # rad/s   surprise: xoay tại chỗ
+    spin_turns: 1.0             # vòng
+    save_results: true          # ~/tb4_results/emotion_<thời_gian>/

@@ -360,7 +360,7 @@ def main(argv=None):
             if ok if done is None else done:
                 self.setup_done = True
             then, self.setup_then = self.setup_then, None
-            (self.get_logger().info if ok else self.get_logger().warn)(message)
+            gl.log_at(self.get_logger(), 'info' if ok else 'warn', message)
             self.record('setup', message)
             if then is not None:                       # chuẩn bị xong -> chạy hành vi đã xác nhận
                 if ok and self.sm.state == gl.EXECUTING and self.sm.active == then:
